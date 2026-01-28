@@ -1,75 +1,64 @@
-import React, { useState, useMemo } from 'react';
-import { Table, Card, Button, Input, message, Popconfirm } from 'antd';
-import { PlusOutlined, DeleteOutlined, SearchOutlined } from '@ant-design/icons';
-import { initialData, ProductItem } from './data';
-import ProductForm from './ProductForm';
+import React, { useState, useEffect } from 'react';
+import { Tabs, Card, message, Button } from 'antd';
+import { initialProducts, initialOrders, ProductItem, OrderItem } from '../../models/dataProduct';
+import Dashboard from './Dashboard';
+import ProductTab from './ProductTab';
+import OrderTab from './OrderTab';
+import OrderForm from './OrderForm';
 
-const ProductManagement: React.FC = () => {
-  const [products, setProducts] = useState<ProductItem[]>(initialData);
-  const [searchText, setSearchText] = useState('');
-  const [isModalOpen, setIsModalOpen] = useState(false);
+const ProductManagementMain: React.FC = () => {
+  const [products, setProducts] = useState<ProductItem[]>([]);
+  const [orders, setOrders] = useState<OrderItem[]>([]);
+  const [isOrderModalOpen, setIsOrderModalOpen] = useState(false);
 
-  const handleDelete = (id: number) => {
-    setProducts(products.filter((p) => p.id !== id));
-    message.success('Xóa sản phẩm thành công!');
+  useEffect(() => {
+    const p = localStorage.getItem('products');
+    const o = localStorage.getItem('orders');
+    setProducts(p ? JSON.parse(p) : initialProducts);
+    setOrders(o ? JSON.parse(o) : initialOrders);
+  }, []);
+
+  useEffect(() => {
+    if (products.length) localStorage.setItem('products', JSON.stringify(products));
+    if (orders.length) localStorage.setItem('orders', JSON.stringify(orders));
+  }, [products, orders]);
+
+  const handleCreateOrder = (values: any) => {
+    const orderProducts = values.productIds.map((id: number) => ({
+      productId: id,
+      productName: products.find(p => p.id === id)?.name,
+      quantity: values.quantities[id],
+      price: products.find(p => p.id === id)?.price
+    }));
+
+    const newOrder: OrderItem = {
+      id: `DH${Math.floor(Math.random() * 90000) + 10000}`,
+      customerName: values.customerName,
+      phone: values.phone,
+      address: values.address,
+      products: orderProducts,
+      totalAmount: orderProducts.reduce((acc: number, cur: any) => acc + (cur.price * cur.quantity), 0),
+      status: 'Chờ xử lý',
+      createdAt: new Date().toISOString().split('T')[0]
+    };
+
+    setOrders([newOrder, ...orders]);
+    setIsOrderModalOpen(false);
+    message.success('Đã tạo đơn hàng');
   };
-
-  const handleAddProduct = (values: any) => {
-    const newProduct = { ...values, id: Date.now() };
-    setProducts([newProduct, ...products]);
-    message.success('Thêm thành công!');
-    setIsModalOpen(false);
-  };
-
-  const filteredProducts = useMemo(() => {
-    return products.filter((p) =>
-      p.name.toLowerCase().includes(searchText.toLowerCase())
-    );
-  }, [searchText, products]);
-
-  const columns = [
-    { title: 'STT', key: 'stt', render: (_: any, __: any, i: number) => i + 1, width: 70 },
-    { title: 'Tên sản phẩm', dataIndex: 'name', key: 'name' },
-    { title: 'Giá', dataIndex: 'price', key: 'price', render: (v: number) => v.toLocaleString('vi-VN') },
-    { title: 'Số lượng', dataIndex: 'quantity', key: 'quantity' },
-    {
-      title: 'Thao tác',
-      key: 'action',
-      render: (_: any, record: ProductItem) => (
-        <Popconfirm title="Xóa sản phẩm này?" onConfirm={() => handleDelete(record.id)}>
-          <Button type="link" danger icon={<DeleteOutlined />}>Xóa</Button>
-        </Popconfirm>
-      ),
-    },
-  ];
 
   return (
-    <div style={{ padding: '24px' }}>
-      <Card title="QUẢN LÝ SẢN PHẨM">
-        <div style={{ marginBottom: 16, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <Button type="primary" icon={<PlusOutlined />} onClick={() => setIsModalOpen(true)}>
-            Thêm sản phẩm
-          </Button>
-
-          <Input
-            placeholder="Tìm kiếm sản phẩm..."
-            prefix={<SearchOutlined />}
-            style={{ width: 300 }}
-            allowClear
-            onChange={(e) => setSearchText(e.target.value)}
-          />
-        </div>
-
-        <Table columns={columns} dataSource={filteredProducts} rowKey="id" bordered />
+    <div style={{ padding: 24, background: '#f0f2f5', minHeight: '100vh' }}>
+      <Dashboard products={products} orders={orders} />
+      <Card title="HỆ THỐNG QUẢN LÝ" extra={<Button type="primary" onClick={() => setIsOrderModalOpen(true)}>+ Tạo đơn hàng</Button>}>
+        <Tabs defaultActiveKey="1">
+          <Tabs.TabPane tab="Sản phẩm" key="1"><ProductTab products={products} setProducts={setProducts} /></Tabs.TabPane>
+          <Tabs.TabPane tab="Đơn hàng" key="2"><OrderTab orders={orders} setOrders={setOrders} products={products} setProducts={setProducts} /></Tabs.TabPane>
+        </Tabs>
       </Card>
-
-      <ProductForm 
-        visible={isModalOpen} 
-        onCancel={() => setIsModalOpen(false)} 
-        onFinish={handleAddProduct} 
-      />
+      <OrderForm visible={isOrderModalOpen} onCancel={() => setIsOrderModalOpen(false)} onFinish={handleCreateOrder} products={products} />
     </div>
   );
 };
 
-export default ProductManagement;
+export default ProductManagementMain;
