@@ -1,4 +1,5 @@
 ﻿import component from "@/locales/en-US/component";
+import { Redirect } from "react-router";
 
 export default [
 	{
@@ -45,10 +46,17 @@ export default [
 		component: './TodoList',
 	},
 	{
-		path: 'products-management',
+		path: '/products-management',
 		name: 'Quản lý sản phẩm',
 		icon: 'shopping',
 		component: './ProductManagement',
+	}, 
+	{
+		path: '/TH01',
+  		name: 'Thực hành 01',
+ 		 icon: 'project',
+  		component: './TH01',
+  		locale: false,
 	},
 
 	// DANH MUC HE THONG
@@ -103,4 +111,4 @@ export default [
 	{
 		component: './exception/404',
 	},
-];
+];	
