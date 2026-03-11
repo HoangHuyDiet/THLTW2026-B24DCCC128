@@ -2,8 +2,8 @@ import React from 'react';
 import { PageContainer } from '@ant-design/pro-layout';
 import { Tabs, Card } from 'antd';
 
-import BaiTap1 from '../BaiTap1';
-import BaiTap2 from '../BaiTap2';
+import BaiTap1 from './BaiTap1';
+import BaiTap2 from './BaiTap2';
 
 const { TabPane } = Tabs;
 

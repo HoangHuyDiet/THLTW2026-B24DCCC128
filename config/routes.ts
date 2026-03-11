@@ -54,9 +54,14 @@ export default [
 	{
 		path: '/TH01',
   		name: 'Thực hành 01',
- 		 icon: 'project',
+ 		icon: 'project',
   		component: './TH01',
-  		locale: false,
+	},
+	{
+		path: '/TH02',
+		name: 'Thực hành 02',
+		icon: 'project',
+		component: './TH02',
 	},
 
 	// DANH MUC HE THONG
