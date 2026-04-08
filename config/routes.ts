@@ -1,4 +1,7 @@
-﻿export default [
+﻿import component from "@/locales/en-US/component";
+import { Redirect } from "react-router";
+
+export default [
 	{
 		path: '/user',
 		layout: false,
@@ -41,6 +44,24 @@
 		name: 'TodoList',
 		icon: 'OrderedListOutlined',
 		component: './TodoList',
+	},
+	{
+		path: '/products-management',
+		name: 'Quản lý sản phẩm',
+		icon: 'shopping',
+		component: './ProductManagement',
+	}, 
+	{
+		path: '/TH01',
+  		name: 'Thực hành 01',
+ 		icon: 'project',
+  		component: './TH01',
+	},
+	{
+		path: '/TH02',
+		name: 'Thực hành 02',
+		icon: 'project',
+		component: './TH02',
 	},
 
 	// DANH MUC HE THONG
@@ -95,4 +116,4 @@
 	{
 		component: './exception/404',
 	},
-];
+];	
