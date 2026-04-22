@@ -87,6 +87,12 @@ export default [
 		icon: 'project',
 		component: './TH06'
 	},
+	{
+		path: 'KTGK',
+		name: 'Kiểm tra giữa kì',
+		icon: 'project',
+		component: './KTGK'
+	},
 
 	// DANH MUC HE THONG
 	// {
