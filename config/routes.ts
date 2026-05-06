@@ -105,6 +105,12 @@ export default [
 		icon: 'project',
 		component: './TH08'
 	},
+	{
+		path: 'TH09',
+		name: 'Thực hành 09',
+		icon: 'project',
+		component: './TH09'
+	},
 
 	// DANH MUC HE THONG
 	// {
